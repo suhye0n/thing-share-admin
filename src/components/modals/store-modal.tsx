@@ -16,6 +16,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import axios from 'axios';
+import { SignOutButton } from '@clerk/nextjs';
+import { toast } from 'react-hot-toast';
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -23,6 +27,9 @@ const formSchema = z.object({
 
 export const StoreModal = () => {
   const storeModal = useStoreModal();
+
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,7 +38,19 @@ export const StoreModal = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    try {
+      setLoading(true);
+
+      const response = await axios.post('/api/stores', data);
+
+      console.log(response.data);
+      toast.success('완료되었습니다.');
+    } catch (error) {
+      console.log(error);
+      toast.error('에러가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +61,7 @@ export const StoreModal = () => {
       onClose={storeModal.onClose}
     >
       <div>
+        <SignOutButton />
         <div className="space-y-4 py-2 pb-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -52,17 +72,19 @@ export const StoreModal = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Test" {...field} />
+                      <Input disabled={loading} placeholder="Test" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="pt-6 space-x-2 flex items-center justify-end">
-                <Button variant="outline" onClick={storeModal.onClose}>
+                <Button disabled={loading} variant="outline" onClick={storeModal.onClose}>
                   취소
                 </Button>
-                <Button type="submit">완료</Button>
+                <Button disabled={loading} type="submit">
+                  완료
+                </Button>
               </div>
             </form>
           </Form>

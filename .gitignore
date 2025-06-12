@@ -47,3 +47,4 @@ next-env.d.ts
 bun.lock
 package-lock.json
 yarn.lock
+/src/generated/prisma
