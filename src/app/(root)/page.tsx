@@ -1,13 +1,12 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
-import { Modal } from '@/components/ui/modal';
-import { useStoreModal } from '@/hooks/use-store-modal';
+import { useShareboxModal } from '@/hooks/use-sharebox-modal';
 import { useEffect } from 'react';
 
 const Page = () => {
-  const onOpen = useStoreModal((state) => state.onOpen);
-  const isOpen = useStoreModal((state) => state.isOpen);
+  const onOpen = useShareboxModal((state) => state.onOpen);
+  const isOpen = useShareboxModal((state) => state.isOpen);
 
   useEffect(() => {
     if (!isOpen) onOpen();

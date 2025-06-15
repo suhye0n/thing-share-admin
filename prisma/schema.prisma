@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Store {
+model Sharebox {
   id        String    @id @default(uuid())
   name      String
   userId    String

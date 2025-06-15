@@ -17,14 +17,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
-    const store = await prismadb.store.create({
+    const sharebox = await prismadb.sharebox.create({
       data: {
         name,
         userId,
       },
     });
 
-    return NextResponse.json(store);
+    return NextResponse.json(sharebox);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
