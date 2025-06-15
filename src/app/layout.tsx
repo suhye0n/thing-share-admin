@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { ClerkProvider } from '@clerk/nextjs';
 import { Inter } from 'next/font/google';
 
+import { ClerkProvider } from '@clerk/nextjs';
 import { ModalProvider } from '@/providers/modal-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 
@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   description: '띵쉐어 - 관리자 대시보드',
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <ClerkProvider>
       <html lang="en">
@@ -30,4 +30,6 @@ export default function RootLayout({
       </html>
     </ClerkProvider>
   );
-}
+};
+
+export default RootLayout;
