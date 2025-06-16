@@ -42,9 +42,8 @@ export const ShareboxModal = () => {
 
       const response = await axios.post('/api/shareboxes', data);
 
-      console.log(response.data);
+      window.location.assign(`/${response.data.id}`);
       toast.success('쉐어박스가 성공적으로 생성되었습니다.');
-      shareboxModal.onClose();
     } catch (error) {
       console.log(error);
       toast.error('문제가 발생했습니다. 다시 시도해 주세요.');
