@@ -14,6 +14,11 @@ export const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElemen
       label: '내 쉐어박스',
       active: pathname === `/${params.shareboxId}`,
     },
+    {
+      href: `/${params.shareboxId}/settings`,
+      label: '설정',
+      active: pathname === `/${params.shareboxId}/settings`,
+    },
   ];
   return (
     <nav className={cn('flex items-center space-x-4 lg:space-x-6', className)}>
