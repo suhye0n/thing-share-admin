@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(sharebox);
   } catch (error) {
-    console.error(error);
+    console.error('[POST /api/shareboxes]', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

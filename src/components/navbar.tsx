@@ -13,7 +13,7 @@ const Navbar = async () => {
     redirect('/sign-in');
   }
 
-  const shareboxs = await prismadb?.sharebox.findMany({
+  const shareboxes = await prismadb?.sharebox.findMany({
     where: {
       userId,
     },
@@ -22,7 +22,7 @@ const Navbar = async () => {
   return (
     <div className="border-b">
       <div className="flex items-center h-16 px-4">
-        <ShareboxSwitcher items={shareboxs} />
+        <ShareboxSwitcher items={shareboxes} />
         <MainNav className="mx-6" />
         <div className="flex items-center ml-auto space-x-4">
           <UserButton afterSignOutUrl="/" />

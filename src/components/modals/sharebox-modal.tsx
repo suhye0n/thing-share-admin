@@ -45,7 +45,6 @@ export const ShareboxModal = () => {
       window.location.assign(`/${response.data.id}`);
       toast.success('쉐어박스가 성공적으로 생성되었습니다.');
     } catch (error) {
-      console.log(error);
       toast.error('문제가 발생했습니다. 다시 시도해 주세요.');
     } finally {
       setLoading(false);
