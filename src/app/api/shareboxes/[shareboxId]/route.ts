@@ -68,7 +68,7 @@ export async function DELETE(
 
     return NextResponse.json(sharebox);
   } catch (error) {
-    console.error('[DELETE /api/shareboxes/{shareboxId]}', error);
+    console.error('[DELETE /api/shareboxes/{shareboxId}]', error);
     return new NextResponse('Internal error', { status: 500 });
   }
 }

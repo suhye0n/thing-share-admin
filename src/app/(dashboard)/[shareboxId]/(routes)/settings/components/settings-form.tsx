@@ -101,7 +101,7 @@ export const SettingsForm: React.FC<SettingsFromProps> = ({ initialData }) => {
                 <FormItem>
                   <FormLabel>쉐어박스 이름</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Sharebox name" {...field} />
+                    <Input disabled={loading} placeholder="쉐어박스 이름" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
