@@ -66,8 +66,8 @@ model Product {
 
 model Image {
   id        String   @id @default(uuid())
-  passId    String
-  pass      Pass     @relation("PassToImage", fields: [passId], references: [id], onDelete: Cascade)
+  passId    String?
+  pass      Pass?    @relation("PassToImage", fields: [passId], references: [id], onDelete: Cascade)
   productId String?
   product   Product? @relation("ProductToImage", fields: [productId], references: [id])
   url       String
@@ -80,8 +80,8 @@ model Image {
 
 model Pass {
   id          String    @id @default(uuid())
-  productId   String
-  product     Product   @relation("ProductToPass", fields: [productId], references: [id])
+  productId   String?
+  product     Product?   @relation("ProductToPass", fields: [productId], references: [id])
   name        String
   description String
   price       Decimal
