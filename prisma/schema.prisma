@@ -13,6 +13,7 @@ model Sharebox {
   userId      String
   banners     Banner[]    @relation("ShareboxToBanner")
   categories  Category[]  @relation("ShareboxToCategory")
+  products    Product[]   @relation("ShareboxToProduct")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -33,13 +34,62 @@ model Banner {
 model Category {
   id          String    @id @default(uuid())
   shareboxId  String
-  sharebox    Sharebox  @relation("ShareboxToCategory", fields: [shareboxId], references: [id]) // Updated relation name here
+  sharebox    Sharebox  @relation("ShareboxToCategory", fields: [shareboxId], references: [id])
   bannerId    String
   banner      Banner    @relation(fields: [bannerId], references: [id])
   name        String
+  products    Product[] @relation("CategoryToProduct")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([shareboxId])
   @@index([bannerId])
+}
+
+model Product {
+  id         String   @id @default(uuid())
+  shareboxId String
+  sharebox   Sharebox @relation("ShareboxToProduct", fields: [shareboxId], references: [id])
+  categoryId String
+  category   Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  name       String
+  isFeatured Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  images     Image[]  @relation("ProductToImage")
+  passes     Pass[]   @relation("ProductToPass")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([shareboxId])
+  @@index([categoryId])
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  passId    String
+  pass      Pass     @relation("PassToImage", fields: [passId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation("ProductToImage", fields: [productId], references: [id])
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([passId])
+  @@index([productId])
+}
+
+model Pass {
+  id          String    @id @default(uuid())
+  productId   String
+  product     Product   @relation("ProductToPass", fields: [productId], references: [id])
+  name        String
+  description String
+  price       Decimal
+  duration    Int       // 일 단위
+  isArchived  Boolean   @default(false)
+  images      Image[]   @relation("PassToImage")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([productId])
 }
