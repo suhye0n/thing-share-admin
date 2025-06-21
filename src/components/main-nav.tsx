@@ -15,6 +15,11 @@ export const MainNav = ({ className, ...props }: React.HTMLAttributes<HTMLElemen
       active: pathname === `/${params.shareboxId}`,
     },
     {
+      href: `/${params.shareboxId}/categories`,
+      label: '카테고리',
+      active: pathname === `/${params.shareboxId}/categories`,
+    },
+    {
       href: `/${params.shareboxId}/banners`,
       label: '배너',
       active: pathname === `/${params.shareboxId}/banners`,
