@@ -14,6 +14,7 @@ model Sharebox {
   banners     Banner[]    @relation("ShareboxToBanner")
   categories  Category[]  @relation("ShareboxToCategory")
   products    Product[]   @relation("ShareboxToProduct")
+  orders      Order[]     @relation("ShareboxToOrder")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -88,8 +89,34 @@ model Pass {
   duration    Int       // 일 단위
   isArchived  Boolean   @default(false)
   images      Image[]   @relation("PassToImage")
+  orderItems  OrderItem[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([productId])
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  shareboxId  String
+  sharebox    Sharebox    @relation("ShareboxToOrder", fields: [shareboxId], references: [id])
+  orderItems  OrderItem[]
+  isPaid      Boolean     @default(false)
+  phone       String      @default("")
+  address     String      @default("")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([shareboxId])
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  passId    String
+  pass      Pass    @relation(fields: [passId], references: [id])
+
+  @@index([orderId])
+  @@index([passId])
 }
