@@ -84,7 +84,7 @@ model Pass {
   product     Product?   @relation("ProductToPass", fields: [productId], references: [id])
   name        String
   description String
-  price       Decimal
+  price       Int
   duration    Int       // 일 단위
   isArchived  Boolean   @default(false)
   images      Image[]   @relation("PassToImage")

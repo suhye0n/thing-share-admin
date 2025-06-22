@@ -106,9 +106,15 @@ export async function PATCH(
               passes: {
                 createMany: {
                   data: passes.map(
-                    (pass: { name: string; description: string; duration: number }) => ({
+                    (pass: {
+                      name: string;
+                      description: string;
+                      price: number;
+                      duration: number;
+                    }) => ({
                       name: pass.name,
                       description: pass.description,
+                      price: pass.price,
                       duration: pass.duration,
                     }),
                   ),

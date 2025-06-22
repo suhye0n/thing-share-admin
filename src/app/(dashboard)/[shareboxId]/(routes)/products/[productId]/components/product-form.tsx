@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import * as z from 'zod';
-import { Category, Image, Product } from '@prisma/client';
+import { Category, Image, Product, Pass } from '@prisma/client';
 import { Heading } from '@/components/ui/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -32,10 +32,11 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface ProductFromProps {
+interface ProductFormProps {
   initialData:
     | (Product & {
         images: Image[];
+        passes: Pass[];
       })
     | null;
   categories: Category[];
@@ -47,11 +48,20 @@ const formSchema = z.object({
   categoryId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
+  passes: z
+    .object({
+      name: z.string().min(1, '이름을 입력하세요'),
+      description: z.string().min(1, '설명을 입력하세요'),
+      price: z.number().min(0, '가격은 0 이상이어야 합니다'),
+      duration: z.number().min(1, '기간은 1일 이상이어야 합니다'),
+    })
+    .array()
+    .optional(),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
-export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categories }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories }) => {
   const params = useParams();
   const router = useRouter();
 
@@ -68,6 +78,13 @@ export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categorie
     defaultValues: initialData
       ? {
           ...initialData,
+          passes:
+            initialData.passes?.map(({ name, description, price, duration }) => ({
+              name,
+              description,
+              price: Number(price),
+              duration,
+            })) || [],
         }
       : {
           name: '',
@@ -75,6 +92,7 @@ export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categorie
           categoryId: '',
           isFeatured: false,
           isArchived: false,
+          passes: [],
         },
   });
 
@@ -131,6 +149,7 @@ export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categorie
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
+          {/* 이미지 업로드 */}
           <FormField
             control={form.control}
             name="images"
@@ -152,6 +171,7 @@ export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categorie
             )}
           />
 
+          {/* 기본 정보 */}
           <div className="grid grid-cols-2 gap-8">
             <FormField
               control={form.control}
@@ -224,6 +244,96 @@ export const ProductForm: React.FC<ProductFromProps> = ({ initialData, categorie
               )}
             />
           </div>
+
+          {/* 이용권 관리 */}
+          <FormField
+            control={form.control}
+            name="passes"
+            render={({ field }) => (
+              <>
+                <Separator className="my-8" />
+                <Heading title="이용권" description="상품에 포함된 이용권들을 관리합니다." />
+                <div className="space-y-6">
+                  {(field.value ?? []).map((pass, idx) => (
+                    <div key={idx} className="p-6 space-y-4 border rounded-lg shadow-sm bg-white">
+                      <FormLabel>이용권 이름</FormLabel>
+                      <Input
+                        placeholder="이용권 이름"
+                        value={pass.name}
+                        disabled={loading}
+                        onChange={(e) => {
+                          const arr = [...(field.value ?? [])];
+                          arr[idx].name = e.target.value;
+                          field.onChange(arr);
+                        }}
+                      />
+                      <FormLabel>설명</FormLabel>
+                      <Input
+                        placeholder="설명"
+                        value={pass.description}
+                        disabled={loading}
+                        onChange={(e) => {
+                          const arr = [...(field.value ?? [])];
+                          arr[idx].description = e.target.value;
+                          field.onChange(arr);
+                        }}
+                      />
+                      <FormLabel>가격</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="가격"
+                        value={pass.price.toString()}
+                        disabled={loading}
+                        onChange={(e) => {
+                          const arr = [...(field.value ?? [])];
+                          arr[idx].price = parseFloat(e.target.value || '0');
+                          field.onChange(arr);
+                        }}
+                      />
+                      <FormLabel>기간 (일)</FormLabel>
+                      <Input
+                        type="number"
+                        placeholder="기간 (일)"
+                        value={pass.duration.toString()}
+                        disabled={loading}
+                        onChange={(e) => {
+                          const arr = [...(field.value ?? [])];
+                          arr[idx].duration = parseInt(e.target.value || '0', 10);
+                          field.onChange(arr);
+                        }}
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() =>
+                          field.onChange((field.value ?? []).filter((_, i) => i !== idx))
+                        }
+                        disabled={loading}
+                      >
+                        삭제
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() =>
+                        field.onChange([
+                          ...(field.value ?? []),
+                          { name: '', description: '', price: 0, duration: 1 },
+                        ])
+                      }
+                      disabled={loading}
+                    >
+                      이용권 추가
+                    </Button>
+                  </div>
+                </div>
+                <FormMessage />
+              </>
+            )}
+          />
 
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

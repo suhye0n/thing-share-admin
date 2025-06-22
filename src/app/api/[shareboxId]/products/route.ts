@@ -55,12 +55,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ sharebo
 
     if (passes && passes.length > 0) {
       await prismadb.pass.createMany({
-        data: passes.map((pass: { name: string; description: string; duration: number }) => ({
-          name: pass.name,
-          description: pass.description,
-          duration: pass.duration,
-          productId: product.id,
-        })),
+        data: passes.map(
+          (pass: { name: string; description: string; price: number; duration: number }) => ({
+            name: pass.name,
+            description: pass.description,
+            price: pass.price,
+            duration: pass.duration,
+            productId: product.id,
+          }),
+        ),
       });
     }
 
